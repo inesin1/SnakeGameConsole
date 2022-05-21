@@ -1,0 +1,8 @@
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\bin\Debug\ConsoleGameAdilet.exe.config
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\bin\Debug\ConsoleGameAdilet.exe
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\bin\Debug\ConsoleGameAdilet.pdb
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\obj\Debug\ConsoleGameAdilet.csproj.AssemblyReference.cache
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\obj\Debug\ConsoleGameAdilet.csproj.SuggestedBindingRedirects.cache
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\obj\Debug\ConsoleGameAdilet.csproj.CoreCompileInputs.cache
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\obj\Debug\ConsoleGameAdilet.exe
+C:\Users\artem\source\repos\ConsoleGameAdilet\ConsoleGameAdilet\obj\Debug\ConsoleGameAdilet.pdb
