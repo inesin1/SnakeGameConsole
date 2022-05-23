@@ -13,7 +13,7 @@ namespace ConsoleGameAdilet
 
         public char Sym; //Символ
 
-        public Apple(int x, int y, char sym)
+        public Apple(int x = 3, int y = 3, char sym = 'A')
         {
             X = x;
             Y = y;

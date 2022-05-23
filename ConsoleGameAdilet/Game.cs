@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleGameAdilet
 {
@@ -8,12 +9,15 @@ namespace ConsoleGameAdilet
         private Map _map; //Игровая карта
         private Player _player; //Игрок
         private Apple _apple; //Яблоко
+        private List<PlayerClone> _clones; //Список клонов
 
         private char[,] _screenBuffer; //Буфер экрана
         private int _screenWidth = 16; //Ширина экрана
         private int _screenHeight = 16; //Высота экрана
 
         private ConsoleKeyInfo _key; //Состояние о нажатой клавише
+
+        private Random _random = new Random(); //Рандом
 
         public Game()
         {
@@ -39,6 +43,9 @@ namespace ConsoleGameAdilet
                 if (elapsedSeconds >= 1)
                 {
                     startTime = DateTime.Now.Ticks; //Обнуляем таймер
+
+                    //Обновление
+                    UpdateSecond();
 
                     //Отрисовываем все объекты игры
                     Draw();
@@ -76,8 +83,9 @@ namespace ConsoleGameAdilet
                         }
                     );
 
-            _player = new Player(3, 3, 'P');
-            _apple = new Apple(5, 5, 'A');
+            _player = new Player();
+            _apple = new Apple();
+            _clones = new List<PlayerClone>();
         }
 
         //Обновление
@@ -95,8 +103,18 @@ namespace ConsoleGameAdilet
             //Обновляем позицию игрока на экране
             _screenBuffer[_player.Y,_player.X] = _player.Sym;
 
+            _screenBuffer[_apple.Y, _apple.X] = _apple.Sym;
+
             //Управление
             Input();
+        }
+
+        /// <summary>
+        /// Обновление раз в секунду
+        /// </summary>
+        public void UpdateSecond()
+        {
+            MovePlayer();
         }
 
         //Отрисовка
@@ -125,22 +143,37 @@ namespace ConsoleGameAdilet
         /// </summary>
         public void Input()
         {
+            //Ввод с клавиатуры и смена направления
             if (Console.KeyAvailable)
             {
                 _key = Console.ReadKey();
 
                 //Влево
-                if (_key.Key == ConsoleKey.LeftArrow & _screenBuffer[_player.Y, _player.X - 1] == '.')
-                    _player.X--;
+                if (_key.Key == ConsoleKey.LeftArrow)
+                    _player.Dir = Player.Direction.Left;
                 //Вправо
-                if (_key.Key == ConsoleKey.RightArrow & _screenBuffer[_player.Y, _player.X + 1] == '.')
-                    _player.X++;
+                if (_key.Key == ConsoleKey.RightArrow)
+                    _player.Dir = Player.Direction.Right;
                 //Вверх
-                if (_key.Key == ConsoleKey.UpArrow & _screenBuffer[_player.Y - 1, _player.X] == '.')
-                    _player.Y--;
+                if (_key.Key == ConsoleKey.UpArrow)
+                    _player.Dir = Player.Direction.Up;
                 //Вниз
-                if (_key.Key == ConsoleKey.DownArrow & _screenBuffer[_player.Y + 1, _player.X] == '.')
-                    _player.Y++;
+                if (_key.Key == ConsoleKey.DownArrow)
+                    _player.Dir = Player.Direction.Down;
+            }
+        }
+
+        /// <summary>
+        /// Движение пермонажа
+        /// </summary>
+        public void MovePlayer()
+        {
+            switch (_player.Dir)
+            {
+                case Player.Direction.Left: _player.X--; break;
+                case Player.Direction.Right: _player.X++; break;
+                case Player.Direction.Up: _player.Y--; break;
+                case Player.Direction.Down: _player.Y++; break;
             }
         }
 
@@ -150,12 +183,15 @@ namespace ConsoleGameAdilet
         public void SpawnApple()
         {
             //Вычисляем координаты яблока, используя рандом
-            Random random = new Random();
-            int x = random.Next(0, _map.Width);
-            int y = random.Next(0, _map.Height);
+            int x = _random.Next(0, _map.Width);
+            int y = _random.Next(0, _map.Height);
 
-            Console.WriteLine(x);
-            Console.WriteLine(y);
+            //Если попали на стенку запускаем метод еще раз
+            if (_map.Matrix[y, x] != '.') {SpawnApple(); return;}
+
+            //Меняем координаты яблока на вычисленные
+            _apple.X = x;
+            _apple.Y = y;
         }
     }
 }

@@ -10,13 +10,25 @@ namespace ConsoleGameAdilet
     {
         public int X; //Позиция по X
         public int Y; //Позиция по Y
+        public Direction Dir; //Направление
+        public int Length = 0; //Длина
 
         public char Sym; //Символ, который его обозначает
 
-        public Player(int x, int y, char sym)
+        //Список направлений
+        public enum Direction
+        {
+            Left,
+            Right,
+            Up,
+            Down
+        }
+
+        public Player(int x = 8, int y = 8, Direction dir = Direction.Right, char sym = '*')
         {
             X = x;
             Y = y;
+            Dir = dir;
             Sym = sym;
         }
     }
