@@ -10,8 +10,11 @@ namespace ConsoleGameAdilet
     {
         public int Timer; //Таймер удаления
 
-        public PlayerClone(int timer)
+        public PlayerClone(int x, int y, int timer, char sym = '□')
         {
+            X = x;
+            Y = y;
+            Sym = sym;
             Timer = timer;
         }
     }

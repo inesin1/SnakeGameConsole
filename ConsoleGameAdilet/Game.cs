@@ -19,6 +19,10 @@ namespace ConsoleGameAdilet
 
         private Random _random = new Random(); //Рандом
 
+        //Предыдущие координаты игрока
+        private int _oldPlayerX;
+        private int _oldPlayerY;
+
         public Game()
         {
             Initialize();
@@ -57,7 +61,9 @@ namespace ConsoleGameAdilet
             }
         }
 
-        //Инициализация
+        /// <summary>
+        /// Инициализация игровых объектов
+        /// </summary>
         public void Initialize()
         {
             _screenBuffer = new char[_screenHeight, _screenWidth];
@@ -83,12 +89,14 @@ namespace ConsoleGameAdilet
                         }
                     );
 
-            _player = new Player();
+            _player = new Player(8, 8, Player.Direction.Right, 'O');
             _apple = new Apple();
             _clones = new List<PlayerClone>();
         }
 
-        //Обновление
+        /// <summary>
+        /// Обновление игровых объектов
+        /// </summary>
         public void Update()
         {
             //Обновляем карту на экране
@@ -100,10 +108,24 @@ namespace ConsoleGameAdilet
                 }
             }
 
-            //Обновляем позицию игрока на экране
-            _screenBuffer[_player.Y,_player.X] = _player.Sym;
+            //Обновляем позиции всех клонов
+            foreach (PlayerClone clone in _clones)
+            {
+                _screenBuffer[clone.Y, clone.X] = clone.Sym;
+            }
 
+            //Обновляем поизицию яблока на экране
             _screenBuffer[_apple.Y, _apple.X] = _apple.Sym;
+
+            //Обновляем позицию игрока на экране
+            _screenBuffer[_player.Y, _player.X] = _player.Sym;
+
+            //Поедание яблока
+            if (_player.X == _apple.X && _player.Y == _apple.Y)
+            {
+                SpawnApple();
+                _player.Length++;
+            }
 
             //Управление
             Input();
@@ -115,9 +137,13 @@ namespace ConsoleGameAdilet
         public void UpdateSecond()
         {
             MovePlayer();
+            CreateClone();
+            DecreaseTimer();
         }
 
-        //Отрисовка
+        /// <summary>
+        /// Отрисовка экрана
+        /// </summary>
         public void Draw()
         {
             Console.Clear(); //Очистка консоли
@@ -134,8 +160,6 @@ namespace ConsoleGameAdilet
                 }
                 Console.WriteLine();
             }
-
-            SpawnApple();
         }
 
         /// <summary>
@@ -168,6 +192,10 @@ namespace ConsoleGameAdilet
         /// </summary>
         public void MovePlayer()
         {
+            //Сохраняем предыдущую позицию перед изменением
+            _oldPlayerX = _player.X;
+            _oldPlayerY = _player.Y;
+
             switch (_player.Dir)
             {
                 case Player.Direction.Left: _player.X--; break;
@@ -192,6 +220,27 @@ namespace ConsoleGameAdilet
             //Меняем координаты яблока на вычисленные
             _apple.X = x;
             _apple.Y = y;
+        }
+
+        /// <summary>
+        /// Создание клонов
+        /// </summary>
+        public void CreateClone()
+        {
+            _clones.Add(new PlayerClone(_oldPlayerX, _oldPlayerY, _player.Length + 1, 'o'));
+        }
+
+        /// <summary>
+        /// Уменьшаем таймер клонов и удаляем если таймер достиг нуля
+        /// </summary>
+        public void DecreaseTimer()
+        {
+            //Перебор всех клонов
+            foreach (PlayerClone clone in _clones)
+            {
+                clone.Timer--;
+                if (clone.Timer <= 0) {_clones.Remove(clone); DecreaseTimer(); return;}
+            }
         }
     }
 }
